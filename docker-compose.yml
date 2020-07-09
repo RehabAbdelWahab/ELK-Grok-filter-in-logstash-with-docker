@@ -1,0 +1,64 @@
+version: '2'
+services:
+  elasticsearch:
+    image: elasticsearch:7.6.2
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=es01
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+  kib01:
+    image: kibana:7.6.2
+    container_name: kibana
+    ports:
+      - 5602:5602
+      - 5601:5601
+    environment:
+      SERVER_HOST: 0.0.0.0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+
+  Logstash01:
+    image: logstash:7.6.2
+    container_name: logstash
+    environment:
+      ELASTICSEARCH_URL: http://localhost:9200
+      ELASTICSEARCH_HOSTS: http://localhost:9200
+      XPACK_MONITORING_ENABLED: "false"
+    command: logstash --path.settings=/etc/logstash -f /etc/logstash/conf.d/
+    volumes:
+       - ./confg/:/etc/logstash/conf.d/
+       - ./data/:/data/
+    networks:
+       - elastic   
+
+
+volumes:
+  data01:
+    driver: local
+  confg1:
+    driver: local
+  data:
+    driver: local
+ 
+networks:
+  elastic:
+    driver: bridge
+            
