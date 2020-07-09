@@ -1,4 +1,4 @@
-# ELK-Grok-filter-in-logstash-with-docker-
+# ELK-Grok-filter-in-logstash-with-docker
 
 We have 4 log lines of GTM 
 
@@ -14,13 +14,25 @@ We want to parse them with Grok filter in logstash and show them on elastic and 
 # How to run:
 
 #to make sure everything is gonna be ok
+
+
 $ docker-compose up -d
 
+
+
 #to run with docker compose
+
+
+
 $ docker-compose up 
 
+
+
 #you can see the elastic, kibana and logstash container is up
+
+
 $ docker ps
+
 
 
 Here is the data in elastic:
